@@ -2,25 +2,25 @@
   "unit_id": "u1",
   "unit_title": "I Look Outside",
   "vocabulary": [
-    {"id": "u1_v1", "word": "T-shirt", "meaning": "áo thun", "image": "assets/images/t_shirt.png", "audio": "u1_v1.mp3"},
-    {"id": "u1_v2", "word": "coat", "meaning": "áo choàng", "image": "assets/images/coat.png", "audio": "u1_v2.mp3"},
-    {"id": "u1_v3", "word": "dress", "meaning": "váy", "image": "assets/images/dress.png", "audio": "u1_v3.mp3"},
-    {"id": "u1_v4", "word": "jumper", "meaning": "áo len", "image": "assets/images/jumper.png", "audio": "u1_v4.mp3"},
-    {"id": "u1_v5", "word": "trousers", "meaning": "quần dài", "image": "assets/images/trousers.png", "audio": "u1_v5.mp3"},
-    {"id": "u1_v6", "word": "gloves", "meaning": "găng tay", "image": "assets/images/gloves.png", "audio": "u1_v6.mp3"},
-    {"id": "u1_v7", "word": "scarf", "meaning": "khăn quàng cổ", "image": "assets/images/scarf.png", "audio": "u1_v7.mp3"},
-    {"id": "u1_v8", "word": "sandals", "meaning": "giày xăng đan", "image": "assets/images/sandals.png", "audio": "u1_v8.mp3"},
-    {"id": "u1_v9", "word": "boots", "meaning": "ủng", "image": "assets/images/boots.png", "audio": "u1_v9.mp3"},
-    {"id": "u1_v10", "word": "sunny", "meaning": "trời nắng", "image": "assets/images/sunny.png", "audio": "u1_v10.mp3"},
-    {"id": "u1_v11", "word": "windy", "meaning": "trời gió", "image": "assets/images/windy.png", "audio": "u1_v11.mp3"},
-    {"id": "u1_v12", "word": "raining", "meaning": "trời mưa", "image": "assets/images/raining.png", "audio": "u1_v12.mp3"},
-    {"id": "u1_v13", "word": "snowing", "meaning": "trời tuyết rơi", "image": "assets/images/snowing.png", "audio": "u1_v13.mp3"}
+    {"id": "u1_v1", "word": "T-shirt", "meaning": "áo thun", "image": "https://img.freepik.com/free-vector/isolated-t-shirt-cartoon_1308-61567.jpg", "audio": "u1_v1.mp3"},
+    {"id": "u1_v2", "word": "coat", "meaning": "áo choàng", "image": "https://img.freepik.com/free-vector/yellow-winter-coat-isolated_1308-119106.jpg", "audio": "u1_v2.mp3"},
+    {"id": "u1_v3", "word": "dress", "meaning": "váy", "image": "https://img.freepik.com/free-vector/pink-dress-cartoon-isolated_1308-61014.jpg", "audio": "u1_v3.mp3"},
+    {"id": "u1_v4", "word": "jumper", "meaning": "áo len", "image": "https://img.freepik.com/free-vector/red-knitted-sweater-isolated_1308-115317.jpg", "audio": "u1_v4.mp3"},
+    {"id": "u1_v5", "word": "trousers", "meaning": "quần dài", "image": "https://img.freepik.com/free-vector/blue-jeans-pants-isolated_1308-120155.jpg", "audio": "u1_v5.mp3"},
+    {"id": "u1_v6", "word": "gloves", "meaning": "găng tay", "image": "https://img.freepik.com/free-vector/winter-gloves-cartoon-isolated_1308-62001.jpg", "audio": "u1_v6.mp3"},
+    {"id": "u1_v7", "word": "scarf", "meaning": "khăn quàng cổ", "image": "https://img.freepik.com/free-vector/red-warm-scarf-cartoon-isolated_1308-61995.jpg", "audio": "u1_v7.mp3"},
+    {"id": "u1_v8", "word": "sandals", "meaning": "giày xăng đan", "image": "https://img.freepik.com/free-vector/summer-sandals-cartoon-isolated_1308-60555.jpg", "audio": "u1_v8.mp3"},
+    {"id": "u1_v9", "word": "boots", "meaning": "ủng", "image": "https://img.freepik.com/free-vector/rubber-boots-cartoon-isolated_1308-61400.jpg", "audio": "u1_v9.mp3"},
+    {"id": "u1_v10", "word": "sunny", "meaning": "trời nắng", "image": "https://img.freepik.com/free-vector/cute-sun-cartoon-isolated_1308-63200.jpg", "audio": "u1_v10.mp3"},
+    {"id": "u1_v11", "word": "windy", "meaning": "trời gió", "image": "https://img.freepik.com/free-vector/wind-blowing-cartoon-isolated_1308-64100.jpg", "audio": "u1_v11.mp3"},
+    {"id": "u1_v12", "word": "raining", "meaning": "trời mưa", "image": "https://img.freepik.com/free-vector/rain-cloud-cartoon-isolated_1308-61200.jpg", "audio": "u1_v12.mp3"},
+    {"id": "u1_v13", "word": "snowing", "meaning": "trời tuyết rơi", "image": "https://img.freepik.com/free-vector/snowman-winter-cartoon-isolated_1308-61900.jpg", "audio": "u1_v13.mp3"}
   ],
   "grammar": [
-    {"id": "u1_g1", "sentence": "What are you wearing?", "blank_sentence": "What ______ you wearing?", "answer": "are", "distractors": ["is", "am", "be"], "image": "assets/images/wearing.png"},
-    {"id": "u1_g2", "sentence": "I'm wearing a dress.", "blank_sentence": "I'm wearing a ______.", "answer": "dress", "distractors": ["sunny", "windy", "raining"], "image": "assets/images/dress.png"},
-    {"id": "u1_g3", "sentence": "What's the weather like?", "blank_sentence": "What's the weather ______?", "answer": "like", "distractors": ["look", "love", "live"], "image": "assets/images/weather.png"},
-    {"id": "u1_g4", "sentence": "It's sunny.", "blank_sentence": "It's ______.", "answer": "sunny", "distractors": ["coat", "boots", "gloves"], "image": "assets/images/sunny.png"}
+    {"id": "u1_g1", "sentence": "What are you wearing?", "blank_sentence": "What ______ you wearing?", "answer": "are", "distractors": ["is", "am", "be"], "image": "https://img.freepik.com/free-vector/kids-changing-clothes-cartoon_1308-85000.jpg"},
+    {"id": "u1_g2", "sentence": "I'm wearing a dress.", "blank_sentence": "I'm wearing a ______.", "answer": "dress", "distractors": ["sunny", "windy", "raining"], "image": "https://img.freepik.com/free-vector/pink-dress-cartoon-isolated_1308-61014.jpg"},
+    {"id": "u1_g3", "sentence": "What's the weather like?", "blank_sentence": "What's the weather ______?", "answer": "like", "distractors": ["look", "love", "live"], "image": "https://img.freepik.com/free-vector/weather-types-cartoon-collection_1308-92000.jpg"},
+    {"id": "u1_g4", "sentence": "It's sunny.", "blank_sentence": "It's ______.", "answer": "sunny", "distractors": ["coat", "boots", "gloves"], "image": "https://img.freepik.com/free-vector/cute-sun-cartoon-isolated_1308-63200.jpg"}
   ],
   "dialogue": [
     {

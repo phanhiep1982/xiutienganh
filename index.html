@@ -23,7 +23,7 @@
             color: var(--dark);
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Khóa cuộn chuột tuyệt đối */
+            overflow: hidden; 
             display: flex;
             flex-direction: column;
         }
@@ -81,25 +81,28 @@
 
         h2 { color: var(--secondary); margin-bottom: 10px; font-size: 24px; text-align: center; }
 
-        /* Vòng 1: Quiz & Vòng 2.5: Cloze */
         .quiz-container { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
         .game-img { max-height: 200px; object-fit: contain; border-radius: 16px; border: 4px solid #f0f0f0; }
         .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 600px; }
+        
         .btn-option {
             background: #f8f9fa; border: 2px solid #dee2e6; padding: 15px; border-radius: 12px;
             font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.2s;
         }
         .btn-option:hover { background: #e9ecef; transform: translateY(-2px); }
 
-        /* Vòng 1.5: Spelling */
+        .btn-skip-global {
+            background: #ced4da !important; color: #495057 !important; border: none !important;
+            padding: 8px 24px !important; font-size: 15px !important; border-radius: 8px !important;
+            cursor: pointer; margin-top: 10px; font-weight: bold;
+        }
+
         .spelling-slots { display: flex; gap: 10px; margin: 20px 0; min-height: 50px; }
-        .slot { width: 45px; height: 45px; border-bottom: 3px solid var(--dark); display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; transition: background 0.2s; }
+        .slot { width: 45px; height: 45px; border-bottom: 3px solid var(--dark); display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; }
         .slot.filled { border-bottom-color: var(--success); background-color: #e8f8f5; border-radius: 4px; }
         .spelling-letters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
-        .letter-btn { padding: 10px 18px; background: var(--primary); color: white; font-size: 20px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.1s; }
-        .letter-btn:hover { background: var(--secondary); }
+        .letter-btn { padding: 10px 18px; background: var(--primary); color: white; font-size: 20px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; }
 
-        /* Vòng 2: Speaking */
         .mic-btn {
             width: 80px; height: 80px; border-radius: 50%; background: #ff4757; border: none;
             cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(255,71,87,0.4);
@@ -107,10 +110,7 @@
         .mic-btn.listening { animation: pulse 1.2s infinite; background: #2ed573; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .target-text { font-size: 28px; font-weight: bold; color: var(--dark); letter-spacing: 1px; margin: 15px 0;}
-        .skip-btn { display: none; background: #ffa502; color: white; padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; animation: flash 1s infinite; font-size: 16px; }
-        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* Vòng 3: Dialogue */
         .dialogue-stage { display: flex; justify-content: space-between; width: 100%; max-width: 700px; margin-top: 20px; }
         .avatar-box { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 120px; }
         .avatar { width: 90px; height: 90px; border-radius: 50%; background: #ddd; display: flex; justify-content: center; align-items: center; font-size: 40px; transition: transform 0.2s; }
@@ -118,8 +118,6 @@
         @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-15px); } }
         .bubble { background: #f1f3f5; padding: 15px; border-radius: 12px; max-width: 400px; min-height: 60px; display: flex; align-items: center; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
 
-        /* Utility */
-        .score-view { text-align: center; }
         .start-btn { padding: 15px 40px; font-size: 22px; background: #2ec4b6; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
@@ -134,18 +132,18 @@
     <main>
         <div id="screen-start" class="screen active">
             <h2 style="font-size: 32px;">Chào mừng con đến với Bài học!</h2>
-            <p style="font-size: 18px; text-align: center; max-width: 500px;">Hôm nay chúng ta sẽ cùng khám phá câu chuyện và các từ vựng chủ đề "I LOOK OUTSIDE" qua 5 thử thách cực kỳ hấp dẫn nhé!</p>
+            <p style="font-size: 18px; text-align: center; max-width: 500px;">Hôm nay chúng ta sẽ cùng học từ vựng và mẫu câu chủ đề "I LOOK OUTSIDE" nhé!</p>
             <button class="start-btn" onclick="gameEngine.initGame()">BẮT ĐẦU CHƠI</button>
         </div>
 
         <div id="screen-quiz" class="screen">
-            <h2 id="quiz-heading">Vòng 1: Trắc nghiệm hình ảnh</h2>
+            <h2 id="quiz-heading">Vòng 1</h2>
             <div class="quiz-container">
                 <img id="quiz-img" class="game-img" src="" alt="Quiz Image">
                 <p id="cloze-text" style="font-size: 24px; font-weight: bold; display: none;"></p>
                 <div class="options-grid" id="quiz-options"></div>
             </div>
-            <button id="global-skip-quiz" class="btn-option" onclick="gameEngine.nextChallenge()" style="background:#ced4da; font-size:15px; padding:8px 20px; border:none;">Bỏ qua câu này ➡️</button>
+            <button class="btn-skip-global" onclick="gameEngine.nextChallenge()">Bỏ qua câu này ➡️</button>
         </div>
 
         <div id="screen-spelling" class="screen">
@@ -155,7 +153,7 @@
             <div class="spelling-letters" id="spelling-letters"></div>
             <div style="display: flex; gap: 15px;">
                 <button class="btn-option" onclick="gameEngine.resetSpelling()" style="padding: 10px 20px; font-size:16px;">Xếp lại từ đầu 🔄</button>
-                <button class="btn-option" onclick="gameEngine.nextChallenge()" style="padding: 10px 20px; font-size:16px; background:#ced4da; border:none;">Bỏ qua câu này ➡️</button>
+                <button class="btn-skip-global" onclick="gameEngine.nextChallenge()" style="margin-top:0;">Bỏ qua câu này ➡️</button>
             </div>
         </div>
 
@@ -167,7 +165,7 @@
             <button id="mic-btn" class="mic-btn" onclick="gameEngine.startListening()">
                 <svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
             </button>
-            <button id="skip-speaking" class="skip-btn" onclick="gameEngine.nextChallenge()">BỎ QUA THỬ THÁCH ➡️</button>
+            <button class="btn-skip-global" onclick="gameEngine.nextChallenge()">Bỏ qua câu này ➡️</button>
         </div>
 
         <div id="screen-dialogue" class="screen">
@@ -186,14 +184,14 @@
             <button id="dialogue-mic" class="mic-btn" style="display: none;" onclick="gameEngine.startDialogueListening()">
                 <svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
             </button>
-            <div></div>
+            <button class="btn-skip-global" onclick="gameEngine.nextChallenge()">Bỏ qua câu này ➡️</button>
         </div>
 
         <div id="screen-end" class="screen">
             <h2 style="font-size: 36px; color: var(--correct);">🎉 Xuất Sắc Hoàn Thành! 🎉</h2>
-            <div class="score-view">
+            <div style="text-align: center;">
                 <p style="font-size: 22px; margin-bottom: 20px;">Chúc mừng con đã vượt qua toàn bộ thử thách bài học thành công!</p>
-                <button class="start-btn" onclick="location.reload()">CHƠI LAI TỪ ĐẦU</button>
+                <button class="start-btn" onclick="location.reload()">CHƠI LẠI TỪ ĐẦU</button>
             </div>
             <div></div>
         </div>

@@ -1,16 +1,15 @@
 class EducationalGameEngine {
     constructor() {
         this.data = null;
-        this.gameFlow = []; // Mảng chứa tuần tự cấu trúc kịch bản các vòng chơi
+        this.gameFlow = []; 
         this.currentIndex = 0;
         this.speechAttempts = 0;
         this.recognition = null;
         this.currentSpellingAnswer = "";
-        this.currentSpellingInput = [];
+        this.currentSpellingInput = []; // Mảng chứa các đối tượng { letter: 'T', btnRef: HTMLElement }
         this.audioPath = "assets/audio/";
     }
 
-    // Đọc cơ sở dữ liệu độc lập
     async initGame() {
         try {
             const response = await fetch('data.json');
@@ -20,12 +19,11 @@ class EducationalGameEngine {
             this.showScreen('screen-quiz');
             this.executeChallenge();
         } catch (error) {
-            console.error("Lỗi khởi tạo dữ liệu hệ thống:", error);
-            alert("Không thể tải tệp tin cấu hình data.json!");
+            console.error("Lỗi khởi tạo hệ thống:", error);
+            alert("Không thể tải cấu hình dữ liệu!");
         }
     }
 
-    // Thiết lập Web Speech API
     setupWebSpeech() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
@@ -33,56 +31,49 @@ class EducationalGameEngine {
             this.recognition.lang = 'en-US';
             this.recognition.interimResults = false;
             this.recognition.maxAlternatives = 1;
-        } else {
-            console.warn("Hệ thống Web Speech API không hỗ trợ trình duyệt này.");
         }
     }
 
-    // Phát âm thanh an toàn từ thư mục assets
     playAudio(fileName) {
         const audio = new Audio(`${this.audioPath}${fileName}`);
-        audio.play().catch(e => console.log("Chờ tương tác người dùng để phát âm thanh: " + fileName));
+        audio.play().catch(e => console.log("Chờ tương tác để phát: " + fileName));
     }
 
-    // Tiện ích xáo trộn mảng ngẫu nhiên
     shuffle(array) {
         return array.sort(() => Math.random() - 0.5);
     }
 
-    // KỊCH BẢN 5 VÒNG CHƠI KHÉP KÍN
     buildGameFlow() {
-        // Trộn ngẫu nhiên dữ liệu gốc đầu vào để cá nhân hóa lượt chơi
         const vocabShuffled = this.shuffle([...this.data.vocabulary]);
         const grammarShuffled = this.shuffle([...this.data.grammar]);
         const dialogueShuffled = this.shuffle([...this.data.dialogue]);
 
-        // VÒNG 1: TRẮC NGHIỆM HÌNH ẢNH (Bốc 3 từ ngẫu nhiên)
+        // VÒNG 1: TRẮC NGHIỆM HÌNH ẢNH (3 câu)
         vocabShuffled.slice(0, 3).forEach(v => {
-            this.gameFlow.push({ round: 1, type: 'quiz', data: v });
+            this.gameFlow.push({ round: "1", type: 'quiz', data: v });
         });
 
-        // VÒNG 1.5: THỬ THÁCH SẮP XẾP CHỮ (Bốc 2 từ ngẫu nhiên)
+        // VÒNG 1.5: SẮP XẾP CHỮ (2 câu)
         vocabShuffled.slice(3, 5).forEach(v => {
-            this.gameFlow.push({ round: 1.5, type: 'spelling', data: v });
+            this.gameFlow.push({ round: "1.5", type: 'spelling', data: v });
         });
 
-        // VÒNG 2: BÉ TẬP PHÁT ÂM (Bốc 2 từ ngẫu nhiên)
+        // VÒNG 2: BÉ TẬP PHÁT ÂM (2 câu)
         vocabShuffled.slice(5, 7).forEach(v => {
-            this.gameFlow.push({ round: 2, type: 'speaking', data: v });
+            this.gameFlow.push({ round: "2", type: 'speaking', data: v });
         });
 
-        // VÒNG 2.5: TRẮC NGHIỆM ĐIỀN KHUYẾT (Lấy 2 câu cấu trúc ngữ pháp)
+        // VÒNG 2.5: ĐIỀN KHUYẾT (2 câu)
         grammarShuffled.slice(0, 2).forEach(g => {
-            this.gameFlow.push({ round: 2.5, type: 'cloze', data: g });
+            this.gameFlow.push({ round: "2.5", type: 'cloze', data: g });
         });
 
-        // VÒNG 3: ĐÓNG VAI ĐỐI THOẠI (Lấy 1 phân cảnh đối thoại)
+        // VÒNG 3: ĐÓNG VAI ĐỐI THOẠI (1 câu)
         dialogueShuffled.slice(0, 1).forEach(d => {
-            this.gameFlow.push({ round: 3, type: 'dialogue', data: d });
+            this.gameFlow.push({ round: "3", type: 'dialogue', data: d });
         });
     }
 
-    // ĐIỀU HƯỚNG VÒNG CHƠI (GAME FLOW LOGIC)
     executeChallenge() {
         if (this.currentIndex >= this.gameFlow.length) {
             this.showScreen('screen-end');
@@ -93,7 +84,8 @@ class EducationalGameEngine {
         const current = this.gameFlow[this.currentIndex];
         this.updateProgress();
 
-        // Tái lập trạng thái ẩn hiện cấu trúc HTML
+        // Ẩn/Hiện các nút bỏ qua câu hỏi dùng chung toàn bộ các vòng
+        document.getElementById('global-skip-quiz').style.display = 'block';
         document.getElementById('cloze-text').style.display = 'none';
         document.getElementById('quiz-img').style.display = 'block';
         document.getElementById('skip-speaking').style.display = 'none';
@@ -110,24 +102,28 @@ class EducationalGameEngine {
                 break;
             case 'speaking':
                 this.showScreen('screen-speaking');
+                document.getElementById('global-skip-quiz').style.display = 'none';
                 this.renderSpeaking(current.data);
                 break;
             case 'cloze':
-                this.showScreen('screen-quiz'); // Dùng chung giao diện trắc nghiệm tối ưu diện tích màn hình
+                this.showScreen('screen-quiz');
                 this.renderCloze(current.data);
                 break;
             case 'dialogue':
                 this.showScreen('screen-dialogue');
+                document.getElementById('global-skip-quiz').style.display = 'none';
                 this.renderDialogue(current.data);
                 break;
         }
     }
 
-    // VÒNG 1: TRẮC NGHIỆM HÌNH ẢNH
+    // VÒNG 1: TRẮC NGHIỆM HÌNH ẢNH (Có tiếng Anh phát lên tự động)
     renderQuiz(item) {
         document.getElementById('quiz-heading').innerText = "Vòng 1: Trắc nghiệm hình ảnh";
         document.getElementById('quiz-img').src = item.image;
-        this.playAudio(item.audio);
+        
+        // Tự động phát file tiếng Anh chuẩn của từ vựng ngay khi render
+        setTimeout(() => { this.playAudio(item.audio); }, 300);
 
         const options = this.generateDistractors(item.word, 'vocabulary', 'word');
         this.renderOptionButtons(options, item.word);
@@ -166,12 +162,15 @@ class EducationalGameEngine {
         });
     }
 
-    // VÒNG 1.5: THỬ THÁCH SẮP XẾP CHỮ
+    // VÒNG 1.5: SẮP XẾP CHỮ (SPELLING - SỬA LỖI ẢNH, THÊM BẤM CHỮ ĐỂ XÓA SAI)
     renderSpelling(item) {
+        // Sửa lỗi: Gán đúng ảnh minh họa của từ đó thay vì ảnh mặc định chữ viết
         document.getElementById('spelling-img').src = item.image;
         this.currentSpellingAnswer = item.word.replace(/\s+/g, '').toLowerCase(); 
-        this.currentSpellingInput = [];
-
+        
+        // Phát tiếng Anh từ vựng để hỗ trợ bé nhớ mặt chữ
+        setTimeout(() => { this.playAudio(item.audio); }, 300);
+        
         this.resetSpelling();
     }
 
@@ -179,41 +178,65 @@ class EducationalGameEngine {
         this.currentSpellingInput = [];
         const slotsContainer = document.getElementById('spelling-slots');
         slotsContainer.innerHTML = "";
+
+        // Tạo các ô trống có tính năng click để trả lại chữ nếu bé biết mình sai
         for (let i = 0; i < this.currentSpellingAnswer.length; i++) {
             const slot = document.createElement('div');
             slot.className = 'slot';
+            slot.style.cursor = 'pointer';
+            slot.onclick = () => { this.handleRemoveLetter(i); };
             slotsContainer.appendChild(slot);
         }
 
         const letters = this.shuffle(this.currentSpellingAnswer.split(''));
         const lettersContainer = document.getElementById('spelling-letters');
         lettersContainer.innerHTML = "";
+        
         letters.forEach((letter, idx) => {
             const btn = document.createElement('button');
             btn.className = 'letter-btn';
             btn.innerText = letter.toUpperCase();
-            btn.onclick = () => {
-                this.handleSpellingClick(btn, letter);
-            };
+            btn.setAttribute('data-index', idx);
+            btn.onclick = () => { this.handleSpellingClick(btn, letter); };
             lettersContainer.appendChild(btn);
         });
     }
 
     handleSpellingClick(btn, letter) {
-        btn.style.visibility = 'hidden';
-        const slots = document.querySelectorAll('#spelling-slots .slot');
-        slots[this.currentSpellingInput.length].innerText = letter.toUpperCase();
-        this.currentSpellingInput.push(letter);
+        if (this.currentSpellingInput.length >= this.currentSpellingAnswer.length) return;
 
+        btn.style.visibility = 'hidden'; // Ẩn chữ ở khay lựa chọn đi
+        const currentPos = this.currentSpellingInput.length;
+        
+        const slots = document.querySelectorAll('#spelling-slots .slot');
+        slots[currentPos].innerText = letter.toUpperCase();
+        slots[currentPos].classList.add('filled');
+
+        // Lưu vết chữ viết kèm tham chiếu tới nút bấm ban đầu để hoàn tác dễ dàng
+        this.currentSpellingInput.push({ letter: letter, btnRef: btn });
+
+        // Kiểm tra khi bé xếp đủ số lượng chữ cái
         if (this.currentSpellingInput.length === this.currentSpellingAnswer.length) {
-            const finalWord = this.currentSpellingInput.join('');
+            const finalWord = this.currentSpellingInput.map(item => item.letter).join('');
             if (finalWord === this.currentSpellingAnswer) {
                 this.playAudio('khen_dung.mp3');
                 setTimeout(() => this.nextChallenge(), 1000);
             } else {
                 this.playAudio('khen_sai.mp3');
-                setTimeout(() => this.resetSpelling(), 1000);
             }
+        }
+    }
+
+    // Tính năng mới: Bé bấm vào ô chữ đã xếp sai để hủy bỏ và xếp lại chữ đó
+    handleRemoveLetter(index) {
+        if (index !== this.currentSpellingInput.length - 1) return; // Chỉ cho phép xóa ký tự cuối cùng vừa nhập để tránh rối dòng
+
+        const lastInput = this.currentSpellingInput.pop();
+        if (lastInput) {
+            lastInput.btnRef.style.visibility = 'visible'; // Hiện lại nút ở khay dưới
+            const slots = document.querySelectorAll('#spelling-slots .slot');
+            slots[index].innerText = "";
+            slots[index].classList.remove('filled');
         }
     }
 
@@ -241,12 +264,12 @@ class EducationalGameEngine {
             const feedback = document.getElementById('speaking-feedback');
 
             if (score >= 55) {
-                feedback.innerHTML = `❤️ Chính xác! (${Math.round(score)}%) - Nghe được: "${resultText}"`;
+                feedback.innerHTML = `❤️ Chính xác! (${Math.round(score)}%)`;
                 this.playAudio('khen_dung.mp3');
                 setTimeout(() => this.nextChallenge(), 1500);
             } else {
                 this.speechAttempts++;
-                feedback.innerHTML = `❌ Thử lại con nhé! (${Math.round(score)}%) - Nghe được: "${resultText}"`;
+                feedback.innerHTML = `❌ Thử lại con nhé! (${Math.round(score)}%)`;
                 this.playAudio('khen_sai.mp3');
                 
                 if (this.speechAttempts >= 3) {
@@ -267,16 +290,13 @@ class EducationalGameEngine {
         
         mic.style.display = 'none';
 
-        // Bước 1: Máy phát file thoại nhân vật A
         avA.classList.add('talking');
         bubble.innerHTML = `🤖 <b>A nói:</b> "${item.speaker_m}"`;
         this.playAudio(item.audio_m);
 
-        // Chờ máy dứt lời (Giả định trung bình 4 giây hội thoại)
         await new Promise(res => setTimeout(res, 4000));
         avA.classList.remove('talking');
 
-        // Bước 2: Máy tự động phát âm thanh đọc mẫu của nhân vật B
         avB.classList.add('talking');
         bubble.innerHTML = `👶 <b>Nghe mẫu B:</b> "${item.speaker_u}"`;
         this.playAudio(item.audio_u);
@@ -284,7 +304,6 @@ class EducationalGameEngine {
         await new Promise(res => setTimeout(res, 4500));
         avB.classList.remove('talking');
 
-        // Bước 3: Bật Micro lắng nghe người học
         bubble.innerHTML = `👉 <b>Đến lượt con đọc lời thoại của B:</b> <br>"${item.speaker_u}"`;
         mic.style.display = 'block';
         this.currentDialogueTarget = item.speaker_u;
@@ -313,15 +332,12 @@ class EducationalGameEngine {
         this.recognition.onerror = () => mic.classList.remove('listening');
     }
 
-    // THUẬT TOÁN ĐO ĐỘ TƯƠNG ĐỒNG LAI (HYBRID SPEECH MATCHING)
     calculateHybridMatch(s1, s2) {
         s1 = s1.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
         s2 = s2.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-
         const words1 = s1.split(/\s+/);
         const words2 = s2.split(/\s+/);
 
-        // Khớp từ đơn: Tính khoảng cách Levenshtein
         if (words2.length <= 1) {
             const track = Array(s2.length + 1).fill(null).map(() => Array(s1.length + 1).fill(null));
             for (let i = 0; i <= s1.length; i += 1) track[0][i] = i;
@@ -332,21 +348,14 @@ class EducationalGameEngine {
                     track[j][i] = Math.min(track[j - 1][i] + 1, track[j][i - 1] + 1, track[j - 1][i - 1] + indicator);
                 }
             }
-            const distance = track[s2.length][s1.length];
-            return ((Math.max(s1.length, s2.length) - distance) / Math.max(s1.length, s2.length)) * 100;
-        } 
-        
-        // Khớp câu dài: Chỉ số tương đồng Jaccard
-        else {
+            return ((Math.max(s1.length, s2.length) - track[s2.length][s1.length]) / Math.max(s1.length, s2.length)) * 100;
+        } else {
             const set1 = new Set(words1);
             const set2 = new Set(words2);
-            const intersection = new Set([...set1].filter(x => set2.has(x)));
-            const union = new Set([...set1, ...set2]);
-            return (intersection.size / union.size) * 100;
+            return (new Set([...set1].filter(x => set2.has(x))).size / new Set([...set1, ...set2]).size) * 100;
         }
     }
 
-    // Tiện ích sinh đáp án nhiễu ngẫu nhiên không trùng với đáp án đúng
     generateDistractors(correct, key, subKey) {
         const list = this.data[key].map(item => item[subKey]).filter(val => val !== correct);
         const shuffled = this.shuffle(list);
@@ -361,7 +370,6 @@ class EducationalGameEngine {
     updateProgress() {
         const pct = (this.currentIndex / this.gameFlow.length) * 100;
         document.getElementById('progress-bar').style.width = `${pct}%`;
-        
         const currentChallenge = this.gameFlow[this.currentIndex];
         if(currentChallenge) {
             document.getElementById('round-indicator').innerText = `Vòng ${currentChallenge.round}/3`;

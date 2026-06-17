@@ -8,7 +8,7 @@ class EducationalGameEngine {
         this.currentSpellingAnswer = "";
         this.currentSpellingInput = []; 
         this.audioPath = "assets/audio/";
-        this.currentAudio = null; // Quản lý luồng âm thanh tránh phát đè
+        this.currentAudio = null; 
     }
 
     async initGame() {
@@ -20,7 +20,7 @@ class EducationalGameEngine {
             this.showScreen('screen-quiz');
             this.executeChallenge();
         } catch (error) {
-            console.error("Lỗi khởi tạo hệ thống:", error);
+            console.error("Lỗi khởi tạo dữ liệu hệ thống:", error);
             alert("Không thể tải cấu hình dữ liệu!");
         }
     }
@@ -35,7 +35,6 @@ class EducationalGameEngine {
         }
     }
 
-    // Hàm phát âm thanh thông minh, tự tắt âm thanh cũ trước khi phát âm thanh mới
     playAudio(fileName) {
         if (this.currentAudio) {
             this.currentAudio.pause();
@@ -90,7 +89,6 @@ class EducationalGameEngine {
         const current = this.gameFlow[this.currentIndex];
         this.updateProgress();
 
-        // Thiết lập trạng thái mặc định cho các màn hình
         document.getElementById('cloze-text').style.display = 'none';
         document.getElementById('quiz-img').style.display = 'block';
         this.speechAttempts = 0;
@@ -152,8 +150,7 @@ class EducationalGameEngine {
             btn.onclick = () => {
                 if (opt === correctAnswer) {
                     this.playAudio('khen_dung.mp3');
-                    // SỬA LỖI: Chờ 2 giây nghe hết tiếng khen rồi mới chuyển câu tiếp theo
-                    this.nextChallengeWithDelay(2000);
+                    this.nextChallengeWithDelay(2000); // Chờ 2 giây nghe hết tiếng khen
                 } else {
                     this.playAudio('khen_sai.mp3');
                     btn.style.backgroundColor = '#e63946';
@@ -215,7 +212,7 @@ class EducationalGameEngine {
             const finalWord = this.currentSpellingInput.map(item => item.letter).join('');
             if (finalWord === this.currentSpellingAnswer) {
                 this.playAudio('khen_dung.mp3');
-                this.nextChallengeWithDelay(2000); // Chờ nghe tiếng khen
+                this.nextChallengeWithDelay(2000); 
             } else {
                 this.playAudio('khen_sai.mp3');
             }
@@ -259,7 +256,7 @@ class EducationalGameEngine {
             if (score >= 55) {
                 feedback.innerHTML = `❤️ Chính xác! (${Math.round(score)}%)`;
                 this.playAudio('khen_dung.mp3');
-                this.nextChallengeWithDelay(2000); // Chờ nghe tiếng khen
+                this.nextChallengeWithDelay(2000); 
             } else {
                 this.speechAttempts++;
                 feedback.innerHTML = `❌ Thử lại con nhé! (${Math.round(score)}%)`;
@@ -312,7 +309,7 @@ class EducationalGameEngine {
             if (score >= 55) {
                 bubble.innerHTML = `🎉 Tuyệt vời! Con đối thoại rất tốt. (${Math.round(score)}%)`;
                 this.playAudio('khen_dung.mp3');
-                this.nextChallengeWithDelay(2500); // Chờ nghe tiếng khen dài hội thoại
+                this.nextChallengeWithDelay(2500); 
             } else {
                 bubble.innerHTML = `❌ Chưa chính xác lắm (${Math.round(score)}%). Con bấm Micro nói lại câu của B nhé!`;
                 this.playAudio('khen_sai.mp3');
@@ -356,7 +353,6 @@ class EducationalGameEngine {
         this.executeChallenge();
     }
 
-    // Hàm trì hoãn thông minh để bé nghe trọn vẹn âm thanh hệ thống
     nextChallengeWithDelay(ms) {
         this.currentIndex++;
         setTimeout(() => { this.executeChallenge(); }, ms);
